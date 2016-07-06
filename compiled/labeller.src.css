@@ -1,0 +1,47 @@
+div.friend-labeller-button {
+
+	cursor: pointer;
+	float: right;
+
+}
+
+div.friend-labeller-table {
+
+	display: table;
+	width: 100%;
+	border-spacing: 0 10px;
+
+}
+
+div.friend-labeller-row {
+
+	display: table-row;
+
+}
+
+div.friend-labeller-cell {
+
+	display: table-cell;
+	vertical-align: middle;
+	text-align: left;
+
+}
+
+div.friend-labeller-dialog button#btn-select-friend-label {
+
+	opacity: 0.6;
+
+}
+
+div.friend-labeller-dialog span.friend-labeller-dialog-item {
+
+	cursor: pointer;
+	opacity: 0.5;
+
+}
+
+div.friend-labeller-labelled {
+
+	font-weight: bold;
+
+}
