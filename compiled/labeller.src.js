@@ -31,14 +31,14 @@ class Labeller {
 			return;
 		}
 
-		this.enums = Object.assign(Object.create(null), {
+		this.enums = {
 
 			PLUGIN_ID: "pixeldepth_friend_labeller",
 			PLUGIN_KEY: "pixeldepth_friend_labeller",
 			PLUGIN_VERSION: "1.0.0",
 			PLUGIN_CALLED: yootil.ts()
 
-		});
+		};
 
 		Object.freeze(this.enums);
 
@@ -49,7 +49,10 @@ class Labeller {
 
 		if(yootil.location.profile_friends()){
 			$(() => {
-				this.create_labeller();
+				if(yootil.page.member.id() == yootil.user.id()){
+					this.create_labeller();
+				}
+
 				this.label_friends();
 			});
 		}
@@ -76,7 +79,7 @@ class Labeller {
 	}
 
 	static create_labeller(){
-		let $info = $(".micro-profile").find(".info");
+		let $info = $(".micro-profile, .online-friends .mini-profile").find(".info");
 		let $options_button = $("<div class='friend-labeller-button'><img title='Edit Label' alt='Edit Label' src='" + this.images.label + "' /></div>");
 
 		$options_button.on("click", function(){
@@ -92,7 +95,7 @@ class Labeller {
 		let friend_url = $info.find(".user-link:first").attr("href");
 
 		if(!friend_url){
-			return;
+			friend_url = $info.parent().find(".user-link:first").attr("href");
 		}
 
 		let friend_id = 0;
@@ -203,6 +206,11 @@ class Labeller {
 		if(label_id == 0){
 			if(label.length){
 				label.remove();
+
+				if(info.parent().hasClass("micro-profile")){
+					info.parent().css("height", "");
+				}
+
 				return;
 			}
 		}
@@ -212,7 +220,10 @@ class Labeller {
 			info.append(label);
 		}
 
-		info.parent().css("height", Labeller.settings.micro_profile_height);
+		if(info.parent().hasClass("micro-profile")){
+			info.parent().css("height", Labeller.settings.micro_profile_height);
+		}
+
 		label.html(label_text);
 	}
 
@@ -248,9 +259,9 @@ class Labeller {
 	}
 
 	static label_friends(){
-		let $micro_profile = $(".micro-profile");
-		let $info = $micro_profile.find(".info");
-		let data = yootil.key.value(Labeller.enums.PLUGIN_KEY, yootil.user.id());
+		let $profile = $(".micro-profile, .online-friends .mini-profile");
+		let $info = $profile.find(".info");
+		let data = yootil.key.value(Labeller.enums.PLUGIN_KEY, yootil.page.member.id());
 
 		if(!data){
 			return;
@@ -262,7 +273,7 @@ class Labeller {
 			let friend_url = $(this).find(".user-link:first").attr("href");
 
 			if(!friend_url){
-				return;
+				friend_url = $(this).parent().find(".user-link:first").attr("href");
 			}
 
 			let friend_id = 0;
@@ -280,15 +291,15 @@ class Labeller {
 
 				if(label){
 					$(this).append($("<div class='friend-labeller-labelled'>" + label + "</div>"));
-					$(this).parent().css("height", Labeller.settings.micro_profile_height);
+
+					if($(this).parent().hasClass("micro-profile")){
+						$(this).parent().css("height", Labeller.settings.micro_profile_height);
+					}
+
 					has_label = true;
 				}
 			};
 		});
-
-		if(has_label){
-			$micro_profile.css("height", Labeller.settings.micro_profile_height);
-		}
 	}
 
 	static get_label(id){
